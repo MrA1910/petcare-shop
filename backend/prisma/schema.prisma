@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  C_ID       String    @id @db.VarChar(10)
+  Cname      String    @db.VarChar(30)
+  Surname    String    @db.VarChar(30)
+  Tel        String    @db.VarChar(11)
+  Address    String    @db.VarChar(50)
+
+  Orders     Order[]
+  Bookings   Booking[]
+}
+
+model Employee {
+  Emp_ID      String     @id @db.VarChar(10)
+  EmpName     String     @db.VarChar(30)
+  EmpSurname  String     @db.VarChar(30)
+  DOB         DateTime
+  Address     String     @db.VarChar(50)
+  Tel         String     @db.VarChar(11)
+  Gender      String     @db.Char(1)
+  EmpRole     String     @db.VarChar(30)
+  EmpPass     String     @db.VarChar(100)
+
+  Orders      Order[]
+  Purchases   Purchase[]
+}
+
+model Supplier {
+  Sup_ID     String     @id @db.VarChar(10)
+  SupName    String     @db.VarChar(30)
+  Tel        String     @db.VarChar(11)
+  Address    String     @db.VarChar(50)
+  Email      String     @db.VarChar(30)
+
+  Purchases  Purchase[]
+}
+
+model ProductType {
+  PT_ID    String     @id @db.VarChar(10)
+  PTName   String     @db.VarChar(30)
+
+  Products Product[]
+  BookingDetails BookingDetail[]
+}
+
+model Product {
+  P_ID            String            @id @db.VarChar(10)
+  PName           String            @db.VarChar(30)
+  PSalePrice      Decimal
+  PInitialPrice   Decimal
+  PStockQuantity  Int
+  Pt_ID           String            @db.VarChar(10)
+  ProductType     ProductType       @relation(fields: [Pt_ID], references: [PT_ID])
+
+  OrderDetails     OrderDetail[]
+  PurchaseDetails  PurchaseDetail[]
+}
+
+model Service {
+  S_ID          String     @id @db.VarChar(10)
+  SName         String     @db.VarChar(30)
+  SDescription  String
+  SPrice        Decimal
+  SDuration DateTime   @db.Time
+
+  BookingDetails BookingDetail[]
+}
+
+model Booking {
+  Booking_ID     String           @id @db.VarChar(10)
+  BookingDate    DateTime
+  BookingStatus  String           @db.VarChar(10)
+  C_ID           String           @db.VarChar(10)
+  Customer       Customer         @relation(fields: [C_ID], references: [C_ID])
+
+  BookingDetails BookingDetail[]
+}
+
+model BookingDetail {
+  Bdt_ID       String     @id @db.VarChar(10)
+  BdtQty       Int
+  Booking_ID   String     @db.VarChar(10)
+  Pt_ID        String?    @db.VarChar(10)
+  S_ID         String?    @db.VarChar(10)
+
+  Booking      Booking    @relation(fields: [Booking_ID], references: [Booking_ID])
+  ProductType  ProductType? @relation(fields: [Pt_ID], references: [PT_ID])
+  Service      Service?   @relation(fields: [S_ID], references: [S_ID])
+}
+
+model Order {
+  Order_ID      String          @id @db.VarChar(10)
+  Orderdate     DateTime
+  OrderStatus   String          @db.VarChar(20)
+  Emp_ID        String          @db.VarChar(10)
+  C_ID          String          @db.VarChar(10)
+
+  Employee      Employee        @relation(fields: [Emp_ID], references: [Emp_ID])
+  Customer      Customer        @relation(fields: [C_ID], references: [C_ID])
+
+  OrderDetails  OrderDetail[]
+}
+
+model OrderDetail {
+  Ordt_ID     String     @id @db.VarChar(10)
+  Ordtprice   Decimal
+  OrdtQty     Int
+  Order_ID    String     @db.VarChar(10)
+  P_ID        String     @db.VarChar(10)
+
+  Order       Order      @relation(fields: [Order_ID], references: [Order_ID])
+  Product     Product    @relation(fields: [P_ID], references: [P_ID])
+}
+
+model Purchase {
+  Pur_ID      String          @id @db.VarChar(10)
+  PurStatus   String          @db.VarChar(20)
+  PurDate     DateTime
+  Sup_ID      String          @db.VarChar(10)
+  Emp_ID      String          @db.VarChar(10)
+
+  Supplier    Supplier        @relation(fields: [Sup_ID], references: [Sup_ID])
+  Employee    Employee        @relation(fields: [Emp_ID], references: [Emp_ID])
+
+  PurchaseDetails PurchaseDetail[]
+}
+
+model PurchaseDetail {
+  PurDt_ID     String     @id @db.VarChar(10)
+  PurDtQuantity Int
+  PurDtPrice   Decimal
+  PurDtStatus  String     @db.VarChar(10)
+  Pur_ID       String     @db.VarChar(10)
+  P_ID         String     @db.VarChar(10)
+
+  Purchase     Purchase   @relation(fields: [Pur_ID], references: [Pur_ID])
+  Product      Product    @relation(fields: [P_ID], references: [P_ID])
+}

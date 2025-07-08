@@ -1,0 +1,9 @@
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Prisma generated client
+/prisma/migrations/
+/prisma/dev.db
