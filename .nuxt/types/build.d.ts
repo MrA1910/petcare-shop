@@ -12,6 +12,8 @@ declare module "#build/paths.mjs";
 declare module "#build/root-component.mjs";
 declare module "#build/plugins.server.mjs";
 declare module "#build/test-component-wrapper.mjs";
+declare module "#build/devtools/settings.mjs";
+declare module "#build/runtime.vue-devtools-client.jve0K0CwYOmn2t8pkP74_2CFz7FpdUW6C_qinhR5MbY.js";
 declare module "#build/pages.mjs";
 declare module "#build/router.options.mjs";
 declare module "#build/unhead-options.mjs";
